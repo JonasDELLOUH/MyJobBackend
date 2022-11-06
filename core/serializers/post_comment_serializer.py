@@ -12,6 +12,7 @@ class PostCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = PostComment
         fields = [
+            'id',
             'member',
             'member_id',
             'postCommentText',

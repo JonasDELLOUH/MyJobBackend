@@ -12,4 +12,9 @@ class JobSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Job
-        fields = '__all__'
+        fields = [
+            'jobName',
+            'jobImageUrl',
+            'jobCategory',
+            'jobCategory_id'
+        ]

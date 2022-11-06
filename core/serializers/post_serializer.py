@@ -4,14 +4,15 @@ from core.models.member import Member
 from core.models.post import Post
 from core.models.post_comment import PostComment
 from core.models.post_like import PostLike
-from core.serializers.member_serializer import MemberSerializer
+from core.models.worker import Worker
 from core.serializers.post_comment_serializer import PostCommentSerializer
 from core.serializers.post_like_serializer import PostLikeSerializer
+from core.serializers.worker_serializer import WorkerSerializer
 
 
 class PostSerializer(serializers.ModelSerializer):
-    member = MemberSerializer(required=False, read_only=True)
-    member_id = serializers.PrimaryKeyRelatedField(write_only=True, source='member', queryset=Member.objects.all())
+    worker = WorkerSerializer(required=False, read_only=True)
+    worker_id = serializers.PrimaryKeyRelatedField(write_only=True, source='worker', queryset=Worker.objects.all())
 
     postlikes = PostLikeSerializer(many=True, required=False, read_only=True)
     postlikes_ids = serializers.PrimaryKeyRelatedField(
@@ -72,8 +73,8 @@ class PostSerializer(serializers.ModelSerializer):
         model = Post
         fields = [
             'id',
-            'member',
-            'member_id',
+            'worker',
+            'worker_id',
             'postText',
             'postContentUrl',
             'date_created',

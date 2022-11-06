@@ -8,7 +8,7 @@ class Member(models.Model):
     displayName = models.CharField(max_length=50, null=False, blank=False)
     phoneNumber = models.CharField(max_length=50, null=True, blank=True)
     aboutMe = models.CharField(max_length=300, null=True, blank=False)
-    isWorker = models.IntegerField(blank=True, )
+    isWorker = models.BooleanField(verbose_name="IsWorker", auto_created=False)
     date_created = models.DateTimeField(auto_now=True)
     date_updated = models.DateTimeField(auto_now=True)
 
