@@ -15,6 +15,7 @@ class MessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message
         fields = [
+            'id',
             'messageContent',
             'messageFileUrl',
             'memberFrom',

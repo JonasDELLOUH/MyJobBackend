@@ -7,12 +7,13 @@ from core.serializers.job_category_serializer import JobCategorySerializer
 
 class JobSerializer(serializers.ModelSerializer):
     jobCategory = JobCategorySerializer(required=False, read_only=True)
-    jobCategory_id = serializers.PrimaryKeyRelatedField(write_only=True, source='member',
+    jobCategory_id = serializers.PrimaryKeyRelatedField(write_only=True, source='jobCategory',
                                                         queryset=JobCategory.objects.all())
 
     class Meta:
         model = Job
         fields = [
+            'id',
             'jobName',
             'jobImageUrl',
             'jobCategory',

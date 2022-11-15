@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from core.models.adress import Address
+from core.models.address import Address
 from core.models.workshop import Workshop
 from core.serializers.adress_serializer import AddressSerializer
 
@@ -12,6 +12,7 @@ class WorkshopSerializer(serializers.ModelSerializer):
     class Meta:
         model = Workshop
         fields = [
+            'id',
             'workshopName',
             'workshopImageUrl',
             'address',

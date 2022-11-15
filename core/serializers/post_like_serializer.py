@@ -12,6 +12,7 @@ class PostLikeSerializer(serializers.ModelSerializer):
     class Meta:
         model = PostLike
         fields = [
+            'id',
             'member',
             'member_id',
             'date_created'

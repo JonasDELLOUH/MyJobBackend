@@ -2,7 +2,7 @@ from django.urls import path, include
 from rest_framework import routers
 
 from core.views import MemberViewSet, PostViewSet, PostCommentViewSet, PostLikeViewSet, JobViewSet, JobCategoryViewSet, \
-    WorkerViewSet, MessageViewSet, AddressViewSet
+    WorkerViewSet, MessageViewSet, AddressViewSet, WorkshopViewSet, DiscussionViewSet
 
 router = routers.DefaultRouter()
 router.register('member', MemberViewSet, basename='Member')
@@ -14,7 +14,8 @@ router.register('job_category', JobCategoryViewSet, basename="JobCategory")
 router.register('worker', WorkerViewSet, basename="Worker")
 router.register('message', MessageViewSet, basename="Message")
 router.register('address', AddressViewSet, basename="Address")
-router.register('workshop', WorkerViewSet, basename="Workshop")
+router.register('workshop', WorkshopViewSet, basename="Workshop")
+router.register('discussion', DiscussionViewSet, basename="discussion")
 
 urlpatterns = [
     path('', include(router.urls))

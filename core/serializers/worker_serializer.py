@@ -22,6 +22,7 @@ class WorkerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Worker
         fields = [
+            'id',
             'member',
             'member_id',
             'workshop',
