@@ -1,4 +1,6 @@
 # Create your views here.
+import operator
+
 from requests import Response
 from rest_framework.viewsets import ModelViewSet
 
@@ -93,6 +95,33 @@ class PostViewSet(ModelViewSet):
     # #     return Response(serializer.data)
 
 
+class PostWithCatViewSet(ModelViewSet):
+    permission_classes = []
+    serializer_class = PostSerializer
+
+    def get_queryset(self):
+        job_category_id = self.request.query_params.get('job_category')
+        job_category = JobCategory.objects.filter(id=job_category_id)
+
+        job = Job.objects.filter(jobCategory=job_category).first()
+        worker = Worker.objects.filter(job=job)
+
+        queryset = Post.objects.filter(worker=worker)
+        return queryset
+
+
+class PostOfWorkerViewSet(ModelViewSet):
+    permission_classes = []
+    serializer_class = PostSerializer
+
+    def get_queryset(self):
+        worker_id = self.request.query_params.get('worker')
+        worker = Worker.objects.filter(id=worker_id).first()
+
+        queryset = Post.objects.filter(worker=worker)
+        return queryset
+
+
 class PostCommentViewSet(ModelViewSet):
     permission_classes = []
     queryset = PostComment.objects.all()
@@ -131,8 +160,41 @@ class WorkshopViewSet(ModelViewSet):
 
 class WorkerViewSet(ModelViewSet):
     permission_classes = []
-    queryset = Worker.objects.all()
+    # queryset = Worker.objects.all()
     serializer_class = WorkerSerializer
+
+    def get_queryset(self):
+        if self.request.query_params.get('name'):
+            name = self.request.query_params.get('name')
+            members = Member.objects.filter(displayName__regex=r'^' + name + '*')
+            workers = []
+            for member in members:
+                worker = Worker.objects.filter(member=member).first()
+                workers.append(worker)
+
+            queryset = workers
+            return queryset
+        if self.request.query_params.get('job_name'):
+            job_name = self.request.query_params.get('job_name')
+            jobs = Job.objects.filter(jobName__regex=r'^' + job_name + '*')
+            workers = []
+            for job in jobs:
+                worker = Worker.objects.filter(job=job).first()
+                workers.append(worker)
+            queryset = workers
+            return queryset
+        if self.request.query_params.get('job_category_name'):
+            job_category_name = self.request.query_params.get('job_category_name')
+            job_categories = JobCategory.objects.filter(jobCategoryName__regex=r'^' + job_category_name + '*')
+            workers = []
+            for job_category in job_categories:
+                job = Job.objects.filter(jobCategory=job_category).first()
+                worker = Worker.objects.filter(job=job).first()
+                workers.append(worker)
+            queryset = workers
+            return queryset
+
+        return Worker.objects
 
 
 class MessageViewSet(ModelViewSet):
@@ -147,7 +209,18 @@ class MessageViewSet(ModelViewSet):
         member_to = Member.objects.filter(id=member_to_id).first()
         member_from = Member.objects.filter(id=member_from_id).first()
 
-        queryset = Message.objects.filter(memberFrom=member_from, memberTo=member_to)
+        queryset1 = Message.objects.filter(memberFrom=member_from, memberTo=member_to)
+        queryset2 = Message.objects.filter(memberFrom=member_to, memberTo=member_from)
+
+        myList = []
+        for o in queryset1:
+            myList.append(o)
+        for o in queryset2:
+            myList.append(o)
+
+        myList.sort(key=operator.attrgetter("date_created"))
+
+        queryset = myList
 
         return queryset
 
@@ -163,13 +236,26 @@ class DiscussionViewSet(ModelViewSet):
 
         queryset1 = Message.objects.filter(memberFrom=member)
         queryset2 = Message.objects.filter(memberTo=member)
-        myList = []
+        messages = []
         for o in queryset1:
-            myList.append(o)
+            messages.append(o)
         for o in queryset2:
-            myList.append(o)
-
-        queryset = myList
-        # queryset.sort()
+            messages.append(o)
+        messages.sort(key=operator.attrgetter("date_created"), reverse=True)
+        i = 0
+        while i < len(messages):
+            j = i + 1
+            while j < len(messages):
+                if ((messages[i].memberTo.id == messages[j].memberTo.id and messages[i].memberFrom.id == messages[
+                    j].memberFrom.id)
+                        or (messages[i].memberTo.id == messages[j].memberFrom.id and messages[i].memberFrom.id ==
+                            messages[
+                                j].memberTo.id)):
+                    print("yesss remove")
+                    messages.pop(j)
+                    j -= 1
+                j += 1
+            i += 1
+        queryset = messages
 
         return queryset
