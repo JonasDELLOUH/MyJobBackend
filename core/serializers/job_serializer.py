@@ -10,6 +10,7 @@ class JobSerializer(serializers.ModelSerializer):
     jobCategory_id = serializers.PrimaryKeyRelatedField(write_only=True, source='jobCategory',
                                                         queryset=JobCategory.objects.all())
 
+    # yess
     class Meta:
         model = Job
         fields = [
