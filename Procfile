@@ -1,1 +1,1 @@
-web: gunicorn settings.wsgi
+web: gunicorn MyJobBackend.wsgi --log-file -
